@@ -3,8 +3,14 @@
 public class Shape : PersistableObject
 {
 
-
     int shapeId = int.MinValue;
+
+    MeshRenderer meshRenderer;
+
+    void Awake()
+    {
+        meshRenderer = GetComponent<MeshRenderer>();
+    }
 
     public int ShapeId
     {
@@ -29,16 +35,23 @@ public class Shape : PersistableObject
 
     public void SetMaterial(Material material, int materialId)
     {
-        GetComponent<MeshRenderer>().material = material;
+        meshRenderer.material = material;
         MaterialId = materialId;
     }
 
     Color color;
+    static int colorPropertyId = Shader.PropertyToID("_Color");
+    static MaterialPropertyBlock sharedPropertyBlock;
 
     public void SetColor(Color color)
     {
         this.color = color;
-        GetComponent<MeshRenderer>().material.color = color;
+        if (sharedPropertyBlock == null)
+        {
+            sharedPropertyBlock = new MaterialPropertyBlock();
+        }
+        sharedPropertyBlock.SetColor(colorPropertyId, color);
+        meshRenderer.SetPropertyBlock(sharedPropertyBlock);
     }
 
     public override void Save(GameDataWriter writer)
