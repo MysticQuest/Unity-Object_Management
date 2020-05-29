@@ -4,7 +4,8 @@ using System.Collections.Generic;
 public class Game : PersistableObject
 {
     public float CreationSpeed { get; set; }
-    float creationProgress;
+    public float DestructionSpeed { get; set; }
+    float creationProgress, destructionProgress;
 
     public PersistentStorage storage;
 
@@ -32,6 +33,12 @@ public class Game : PersistableObject
         {
             creationProgress -= 1f;
             CreateShape();
+        }
+        destructionProgress += Time.deltaTime * DestructionSpeed;
+        while (destructionProgress >= 1f)
+        {
+            destructionProgress -= 1f;
+            DestroyShape();
         }
 
         if (Input.GetKeyDown(createKey))
@@ -76,7 +83,7 @@ public class Game : PersistableObject
     {
         for (int i = 0; i < shapes.Count; i++)
         {
-            Destroy(shapes[i].gameObject);
+            shapeFactory.Reclaim(shapes[i]);
         }
         shapes.Clear();
     }
@@ -86,7 +93,7 @@ public class Game : PersistableObject
         if (shapes.Count > 0)
         {
             int index = Random.Range(0, shapes.Count);
-            Destroy(shapes[index].gameObject);
+            shapeFactory.Reclaim(shapes[index]);
             int lastIndex = shapes.Count - 1;
             shapes[index] = shapes[lastIndex];
             shapes.RemoveAt(lastIndex);
