@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public class Game : PersistableObject
 {
+    public float CreationSpeed { get; set; }
+    float creationProgress;
+
     public PersistentStorage storage;
 
     public ShapeFactory shapeFactory;
@@ -24,6 +27,13 @@ public class Game : PersistableObject
 
     void Update()
     {
+        creationProgress += Time.deltaTime * CreationSpeed;
+        while (creationProgress >= 1f)
+        {
+            creationProgress -= 1f;
+            CreateShape();
+        }
+
         if (Input.GetKeyDown(createKey))
         {
             CreateShape();
