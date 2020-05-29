@@ -77,6 +77,9 @@ public class Game : PersistableObject
         {
             int index = Random.Range(0, shapes.Count);
             Destroy(shapes[index].gameObject);
+            int lastIndex = shapes.Count - 1;
+            shapes[index] = shapes[lastIndex];
+            shapes.RemoveAt(lastIndex);
         }
     }
 
